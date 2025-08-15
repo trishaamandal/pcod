@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Detection System - Advanced Medical AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .medical-gradient {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+
+        .success-gradient {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+        }
+
+        .warning-gradient {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #ebf8ff;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-heartbeat text-white text-2xl mr-3"></i>
+                    <span class="text-white text-xl font-bold">PCOS AI Detector</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="loginBtn" class="text-white hover:text-gray-200 px-3 py-2 rounded-md">Login</button>
+                    <button id="registerBtn"
+                        class="bg-white text-indigo-600 hover:bg-gray-100 px-4 py-2 rounded-md font-medium">Register</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Landing Page -->
+        <div id="landingPage" class="fade-in">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-gray-900 mb-6">Advanced PCOS Detection System</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    Our AI-powered system helps detect Polycystic Ovary Syndrome (PCOS) through advanced image analysis
+                    and comprehensive medical questionnaires. Get accurate, fast, and reliable results.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-white p-6 rounded-xl card-shadow">
+                        <i class="fas fa-camera text-4xl text-blue-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Image Analysis</h3>
+                        <p class="text-gray-600">Upload medical images for AI-powered PCOS detection</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl card-shadow">
+                        <i class="fas fa-clipboard-list text-4xl text-green-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Medical Questionnaire</h3>
+                        <p class="text-gray-600">Complete comprehensive health assessment forms</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl card-shadow">
+                        <i class="fas fa-chart-line text-4xl text-purple-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Instant Results</h3>
+                        <p class="text-gray-600">Get immediate analysis with personalized recommendations</p>
+                    </div>
+                </div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e184448d-eb2c-452d-be74-f61e100fe52a.png"
+                    alt="Modern medical laboratory with AI computers and female doctors analyzing PCOS ultrasound images on large monitors"
+                    class="w-full rounded-xl card-shadow mb-8" />
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="hidden fade-in">
+            <div class="max-w-md mx-auto bg-white rounded-xl card-shadow p-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Welcome Back</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter your email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter your password">
+                    </div>
+                    <button type="button" onclick="showDashboard()"
+                        class="w-full medical-gradient text-white py-3 rounded-md font-medium hover:opacity-90 transition duration-200">
+                        Sign In
+                    </button>
+                </form>
+                <p class="text-center text-gray-600 mt-4">
+                    Don't have an account? <button onclick="showRegister()"
+                        class="text-indigo-600 hover:underline">Register here</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="registerForm" class="hidden fade-in">
+            <div class="max-w-md mx-auto bg-white rounded-xl card-shadow p-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Create Account</h2>
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="First name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Last name">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter your email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Create password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                        <input type="date"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <button type="button" onclick="showDashboard()"
+                        class="w-full medical-gradient text-white py-3 rounded-md font-medium hover:opacity-90 transition duration-200">
+                        Create Account
+                    </button>
+                </form>
+                <p class="text-center text-gray-600 mt-4">
+                    Already have an account? <button onclick="showLogin()" class="text-indigo-600 hover:underline">Sign
+                        in here</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden fade-in">
+            <div class="bg-white rounded-xl card-shadow p-8 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">PCOS Detection Dashboard</h2>
+                    <button onclick="logout()" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+                <p class="text-gray-600 mb-8">Choose your preferred method for PCOS detection analysis</p>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Image/Video Upload Option -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl border-2 border-blue-200">
+                        <div class="text-center mb-6">
+                            <i class="fas fa-camera text-5xl text-blue-600 mb-4"></i>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Image/Video Analysis</h3>
+                            <p class="text-gray-600">Upload medical images or videos for AI-powered PCOS detection</p>
+                        </div>
+                        <button onclick="showUploadSection()"
+                            class="w-full medical-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-200 pulse-glow">
+                            Start Image Analysis
+                        </button>
+                    </div>
+
+                    <!-- Questionnaire Option -->
+                    <div
+                        class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl border-2 border-green-200">
+                        <div class="text-center mb-6">
+                            <i class="fas fa-clipboard-list text-5xl text-green-600 mb-4"></i>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Medical Questionnaire</h3>
+                            <p class="text-gray-600">Complete comprehensive health assessment and medical history</p>
+                        </div>
+                        <button onclick="showQuestionnaire()"
+                            class="w-full success-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-200">
+                            Start Questionnaire
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-xl card-shadow p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <i class="fas fa-image text-blue-500 mr-4"></i>
+                        <div>
+                            <p class="font-medium">Ultrasound image analysis completed</p>
+                            <p class="text-sm text-gray-600">2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <i class="fas fa-file-medical text-green-500 mr-4"></i>
+                        <div>
+                            <p class="font-medium">Medical questionnaire submitted</p>
+                            <p class="text-sm text-gray-600">1 day ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div id="uploadSection" class="hidden fade-in">
+            <div class="bg-white rounded-xl card-shadow p-8">
+                <div class="flex items-center mb-6">
+                    <button onclick="showDashboard()" class="text-gray-600 hover:text-gray-800 mr-4">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-900">Upload Medical Images/Videos</h2>
+                </div>
+
+                <div class="mb-8">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f15f6217-8447-40f0-a506-d5fab579e888.png"
+                        alt="Medical professional pointing to PCOS ultrasound images on computer screen showing ovarian cysts and follicles"
+                        class="w-full rounded-lg card-shadow" />
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- File Upload Area -->
+                    <div>
+                        <label class="block text-lg font-medium text-gray-700 mb-4">Upload Medical Files</label>
+                        <div class="upload-area rounded-lg p-8 text-center cursor-pointer" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-lg text-gray-600 mb-2">Drag and drop files here or click to browse</p>
+                            <p class="text-sm text-gray-500">Supported formats: JPG, PNG, MP4, AVI (Max 50MB)</p>
+                            <input type="file" class="hidden" id="fileInput" multiple accept="image/*,video/*">
+                        </div>
+
+                        <!-- Upload Progress -->
+                        <div id="uploadProgress" class="hidden mt-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">Uploading...</span>
+                                <span class="text-sm text-gray-600" id="progressText">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="progress-bar bg-blue-600 h-2 rounded-full" id="progressBar"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Files -->
+                        <div id="uploadedFiles" class="mt-6 space-y-3"></div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div>
+                        <label class="block text-lg font-medium text-gray-700 mb-4">Additional Information</label>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Type of Medical
+                                    Image/Video</label>
+                                <select
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>Select type...</option>
+                                    <option>Ultrasound - Pelvic</option>
+                                    <option>Ultrasound - Transvaginal</option>
+                                    <option>MRI Scan</option>
+                                    <option>Clinical Photo</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date of Image/Video</label>
+                                <input type="date"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                                <textarea rows="4"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Any additional information about the medical images..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="analyzeImages()"
+                        class="medical-gradient text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition duration-200">
+                        <i class="fas fa-search mr-2"></i>Analyze Images/Videos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questionnaire Section -->
+        <div id="questionnaireSection" class="hidden fade-in">
+            <div class="bg-white rounded-xl card-shadow p-8">
+                <div class="flex items-center mb-6">
+                    <button onclick="showDashboard()" class="text-gray-600 hover:text-gray-800 mr-4">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-900">Medical Assessment Questionnaire</h2>
+                </div>
+
+                <div class="mb-8">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/61021ce2-bc67-4c90-bb60-437a83124018.png"
+                        alt="Female doctor with tablet consulting with patient about PCOS symptoms in modern medical office with anatomical charts"
+                        class="w-full rounded-lg card-shadow" />
+                </div>
+
+                <form class="space-y-8">
+                    <!-- Personal Information -->
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Personal Information</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                <input type="number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Enter your age">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                                <input type="number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Enter height">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
+                                <input type="number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Enter weight">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">BMI (calculated)</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                                    placeholder="Auto-calculated" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menstrual History -->
+                    <div class="bg-pink-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Menstrual History</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Do you have irregular
+                                    menstrual cycles?</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="irregular_cycles" value="yes" class="mr-2">
+                                        <span>Yes, very irregular</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="irregular_cycles" value="sometimes" class="mr-2">
+                                        <span>Sometimes irregular</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="irregular_cycles" value="no" class="mr-2">
+                                        <span>No, regular cycles</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Average cycle length
+                                    (days)</label>
+                                <input type="number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="e.g., 28">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age when periods
+                                    started</label>
+                                <input type="number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Enter age">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Symptoms -->
+                    <div class="bg-yellow-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">PCOS-Related Symptoms</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Excessive hair growth (hirsutism)</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Hair loss or male-pattern baldness</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Acne or oily skin</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Weight gain or difficulty losing weight</span>
+                                </label>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Dark patches of skin</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Mood changes or depression</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Sleep problems</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <span>Fatigue or low energy</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical History -->
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Medical History</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Family history of
+                                    PCOS?</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="family_history" value="yes" class="mr-2">
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="family_history" value="no" class="mr-2">
+                                        <span>No</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="family_history" value="unknown" class="mr-2">
+                                        <span>Unknown</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Do you have diabetes or
+                                    pre-diabetes?</label>
+                                <select
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>Select...</option>
+                                    <option>Yes, Type 1 diabetes</option>
+                                    <option>Yes, Type 2 diabetes</option>
+                                    <option>Yes, pre-diabetes</option>
+                                    <option>No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Other medical
+                                    conditions</label>
+                                <textarea rows="3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="List any other medical conditions or medications..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <button onclick="analyzeQuestionnaire()"
+                        class="success-gradient text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition duration-200">
+                        <i class="fas fa-chart-line mr-2"></i>Analyze Assessment
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden fade-in">
+            <div class="bg-white rounded-xl card-shadow p-8">
+                <div class="flex items-center mb-6">
+                    <button onclick="showDashboard()" class="text-gray-600 hover:text-gray-800 mr-4">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-900">PCOS Detection Results</h2>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="mb-8">
+                    <!-- This will be populated by JavaScript -->
+                </div>
+
+                <!-- Detailed Analysis -->
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Analysis Summary</h3>
+                        <div id="analysisSummary">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Confidence Score</h3>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2" id="confidenceScore">87%</div>
+                            <p class="text-gray-600">Analysis Confidence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-xl">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Personalized Recommendations</h3>
+                    <div id="recommendations">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 text-center space-x-4">
+                    <button onclick="downloadReport()"
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                        <i class="fas fa-download mr-2"></i>Download Report
+                    </button>
+                    <button onclick="shareResults()"
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-200">
+                        <i class="fas fa-share mr-2"></i>Share with Doctor
+                    </button>
+                    <button onclick="newAnalysis()"
+                        class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition duration-200">
+                        <i class="fas fa-plus mr-2"></i>New Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">PCOS AI Detector</h3>
+                    <p class="text-gray-300">Advanced medical AI for PCOS detection and health assessment.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Important Notice</h3>
+                    <p class="text-gray-300 text-sm">This tool is for educational purposes only and should not replace
+                        professional medical advice.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact</h3>
+                    <p class="text-gray-300">support@pcosai.com</p>
+                    <p class="text-gray-300">+1 (555) 123-4567</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Application State
+        let currentSection = 'landingPage';
+        let analysisType = '';
+
+        // Navigation Functions
+        function showLogin() {
+            hideAllSections();
+            document.getElementById('loginForm').classList.remove('hidden');
+            currentSection = 'loginForm';
+        }
+
+        function showRegister() {
+            hideAllSections();
+            document.getElementById('registerForm').classList.remove('hidden');
+            currentSection = 'registerForm';
+        }
+
+        function showDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard').classList.remove('hidden');
+            currentSection = 'dashboard';
+        }
+
+        function showUploadSection() {
+            hideAllSections();
+            document.getElementById('uploadSection').classList.remove('hidden');
+            currentSection = 'uploadSection';
+            analysisType = 'image';
+        }
+
+        function showQuestionnaire() {
+            hideAllSections();
+            document.getElementById('questionnaireSection').classList.remove('hidden');
+            currentSection = 'questionnaireSection';
+            analysisType = 'questionnaire';
+        }
+
+        function showResults(result) {
+            hideAllSections();
+            document.getElementById('resultsSection').classList.remove('hidden');
+            currentSection = 'resultsSection';
+            displayResults(result);
+        }
+
+        function hideAllSections() {
+            const sections = ['landingPage', 'loginForm', 'registerForm', 'dashboard', 'uploadSection', 'questionnaireSection', 'resultsSection'];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+        }
+
+        function logout() {
+            hideAllSections();
+            document.getElementById('landingPage').classList.remove('hidden');
+            currentSection = 'landingPage';
+        }
+
+        // File Upload Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const uploadedFilesDiv = document.getElementById('uploadedFiles');
+            const progressDiv = document.getElementById('uploadProgress');
+
+            progressDiv.classList.remove('hidden');
+
+            Array.from(files).forEach((file, index) => {
+                // Simulate upload progress
+                simulateUpload(file, () => {
+                    addFileToList(file);
+                    if (index === files.length - 1) {
+                        progressDiv.classList.add('hidden');
+                    }
+                });
+            });
+        }
+
+        function simulateUpload(file, callback) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    callback();
+                }
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 200);
+        }
+
+        function addFileToList(file) {
+            const uploadedFilesDiv = document.getElementById('uploadedFiles');
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg';
+            fileDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-file text-green-600 mr-3"></i>
+                    <span class="text-sm font-medium">${file.name}</span>
+                    <span class="text-xs text-gray-500 ml-2">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                </div>
+                <button onclick="removeFile(this)" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            uploadedFilesDiv.appendChild(fileDiv);
+        }
+
+        function removeFile(button) {
+            button.parentElement.remove();
+        }
+
+        // Analysis Functions
+        function analyzeImages() {
+            // Simulate analysis
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressDiv.classList.remove('hidden');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+
+                    setTimeout(() => {
+                        progressDiv.classList.add('hidden');
+                        // Generate random result for demo
+                        const hasRisk = Math.random() > 0.5;
+                        showResults(hasRisk);
+                    }, 1000);
+                }
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '% - Analyzing images...';
+            }, 300);
+        }
+
+        function analyzeQuestionnaire() {
+            // Simulate analysis
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            loadingDiv.innerHTML = `
+                <div class="bg-white p-8 rounded-xl text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+                    <p class="text-lg font-medium">Analyzing your responses...</p>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+
+            setTimeout(() => {
+                document.body.removeChild(loadingDiv);
+                // Generate random result for demo
+                const hasRisk = Math.random() > 0.3;
+                showResults(hasRisk);
+            }, 3000);
+        }
+
+        function displayResults(hasRisk) {
+            const resultCard = document.getElementById('resultCard');
+            const analysisSummary = document.getElementById('analysisSummary');
+            const recommendations = document.getElementById('recommendations');
+            const confidenceScore = document.getElementById('confidenceScore');
+
+            if (hasRisk) {
+                resultCard.innerHTML = `
+                    <div class="warning-gradient text-white p-8 rounded-xl text-center">
+                        <i class="fas fa-exclamation-triangle text-5xl mb-4"></i>
+                        <h3 class="text-3xl font-bold mb-2">PCOS Risk Detected</h3>
+                        <p class="text-lg">Our analysis indicates potential PCOS symptoms. Please consult with a healthcare professional for proper diagnosis.</p>
+                    </div>
+                `;
+
+                analysisSummary.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-orange-500 mr-2"></i>
+                            <span>Irregular menstrual patterns detected</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-orange-500 mr-2"></i>
+                            <span>Hormonal imbalance indicators present</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-orange-500 mr-2"></i>
+                            <span>Multiple PCOS symptoms identified</span>
+                        </div>
+                        ${analysisType === 'image' ? '<div class="flex items-center"><i class="fas fa-check text-orange-500 mr-2"></i><span>Ultrasound analysis shows ovarian abnormalities</span></div>' : ''}
+                    </div>
+                `;
+
+                recommendations.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3">Immediate Actions</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-user-md text-purple-600 mr-2"></i>Schedule appointment with gynecologist</li>
+                                <li><i class="fas fa-vial text-purple-600 mr-2"></i>Request comprehensive hormone testing</li>
+                                <li><i class="fas fa-clipboard-check text-purple-600 mr-2"></i>Track menstrual cycle patterns</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3">Lifestyle Recommendations</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-running text-purple-600 mr-2"></i>Regular exercise (150 min/week)</li>
+                                <li><i class="fas fa-apple-alt text-purple-600 mr-2"></i>Low glycemic index diet</li>
+                                <li><i class="fas fa-bed text-purple-600 mr-2"></i>Maintain healthy sleep schedule</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+
+                confidenceScore.textContent = '78%';
+            } else {
+                resultCard.innerHTML = `
+                    <div class="success-gradient text-white p-8 rounded-xl text-center">
+                        <i class="fas fa-check-circle text-5xl mb-4"></i>
+                        <h3 class="text-3xl font-bold mb-2">Low PCOS Risk</h3>
+                        <p class="text-lg">Our analysis suggests low likelihood of PCOS. Continue maintaining healthy lifestyle habits.</p>
+                    </div>
+                `;
+
+                analysisSummary.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Regular menstrual cycles detected</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Hormone levels appear normal</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>No significant PCOS symptoms</span>
+                        </div>
+                        ${analysisType === 'image' ? '<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i><span>Ovarian structure appears normal</span></div>' : ''}
+                    </div>
+                `;
+
+                recommendations.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3">Preventive Measures</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-calendar text-purple-600 mr-2"></i>Continue regular health checkups</li>
+                                <li><i class="fas fa-chart-line text-purple-600 mr-2"></i>Monitor weight and BMI</li>
+                                <li><i class="fas fa-heart text-purple-600 mr-2"></i>Maintain cardiovascular health</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3">Healthy Habits</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-dumbbell text-purple-600 mr-2"></i>Continue current exercise routine</li>
+                                <li><i class="fas fa-leaf text-purple-600 mr-2"></i>Maintain balanced nutrition</li>
+                                <li><i class="fas fa-smile text-purple-600 mr-2"></i>Manage stress effectively</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+
+                confidenceScore.textContent = '91%';
+            }
+        }
+
+        // Utility Functions
+        function downloadReport() {
+            alert('Report download functionality would be implemented here');
+        }
+
+        function shareResults() {
+            alert('Results sharing functionality would be implemented here');
+        }
+
+        function newAnalysis() {
+            showDashboard();
+        }
+
+        // Event Listeners
+        document.getElementById('loginBtn').addEventListener('click', showLogin);
+        document.getElementById('registerBtn').addEventListener('click', showRegister);
+
+        // Auto-calculate BMI
+        function calculateBMI() {
+            const height = document.querySelector('input[placeholder="Enter height"]')?.value;
+            const weight = document.querySelector('input[placeholder="Enter weight"]')?.value;
+            const bmiField = document.querySelector('input[placeholder="Auto-calculated"]');
+
+            if (height && weight && bmiField) {
+                const heightM = height / 100;
+                const bmi = (weight / (heightM * heightM)).toFixed(1);
+                bmiField.value = bmi;
+            }
+        }
+
+        // Add event listeners for BMI calculation
+        document.addEventListener('input', (e) => {
+            if (e.target.placeholder === 'Enter height' || e.target.placeholder === 'Enter weight') {
+                calculateBMI();
+            }
+        });
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('PCOS Detection System initialized');
+        });
+    </script>
+</body>
+
+</html>
